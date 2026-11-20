@@ -93,6 +93,104 @@ const confetti = Array.from({ length: 34 }, (_, index) => {
   };
 });
 
+/* ───────────────────────────── one person ───────────────────────────── */
+
+interface PersonFieldsProps {
+  index: number;
+  member: PersonInput;
+  errors: FieldErrors;
+  onChange(index: number, field: keyof PersonInput, value: string): void;
+  onBlur(key: string): void;
+}
+
+/** The four fields collected for every player. Index 0 is the team leader. */
+function PersonFields({ index, member, errors, onChange, onBlur }: PersonFieldsProps) {
+  const lead = index === 0;
+  const key = (field: keyof PersonInput) => `members.${index}.${field}`;
+  const id = (field: keyof PersonInput) => fieldId(key(field));
+  const error = (field: keyof PersonInput) => errors[key(field)];
+  return (
+    <div className="grid gap-x-7 gap-y-6 sm:grid-cols-2">
+      <Field id={id("fullName")} label="Full name" required error={error("fullName")}>
+        <input
+          id={id("fullName")}
+          className="px-input"
+          type="text"
+          autoComplete={lead ? "name" : "off"}
+          autoCapitalize="words"
+          spellCheck={false}
+          maxLength={80}
+          aria-required="true"
+          aria-invalid={error("fullName") ? true : undefined}
+          aria-describedby={describedBy(id("fullName"), error("fullName"))}
+          value={member.fullName}
+          onChange={(e) => onChange(index, "fullName", e.target.value)}
+          onBlur={() => onBlur(key("fullName"))}
+        />
+      </Field>
+      <Field id={id("studentId")} label="Student ID" required error={error("studentId")} hint="Exactly as printed on the student card.">
+        <input
+          id={id("studentId")}
+          className="px-input data"
+          type="text"
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={24}
+          aria-required="true"
+          aria-invalid={error("studentId") ? true : undefined}
+          aria-describedby={describedBy(id("studentId"), error("studentId"), true)}
+          value={member.studentId}
+          onChange={(e) => onChange(index, "studentId", e.target.value)}
+          onBlur={() => onBlur(key("studentId"))}
+        />
+      </Field>
+      <Field
+        id={id("email")}
+        label="University email"
+        required
+        error={error("email")}
+        hint={event.requireUniversityEmail ? "Your university inbox — not Gmail or Outlook." : undefined}
+      >
+        <input
+          id={id("email")}
+          className="px-input data"
+          type="email"
+          inputMode="email"
+          autoComplete={lead ? "email" : "off"}
+          autoCapitalize="none"
+          spellCheck={false}
+          maxLength={120}
+          placeholder="name@students.nsbm.ac.lk"
+          aria-required="true"
+          aria-invalid={error("email") ? true : undefined}
+          aria-describedby={describedBy(id("email"), error("email"), event.requireUniversityEmail)}
+          value={member.email}
+          onChange={(e) => onChange(index, "email", e.target.value)}
+          onBlur={() => onBlur(key("email"))}
+        />
+      </Field>
+      <Field id={id("phone")} label="Contact number" required error={error("phone")} hint={lead ? "WhatsApp preferred — we use it for event updates." : undefined}>
+        <input
+          id={id("phone")}
+          className="px-input data"
+          type="tel"
+          inputMode="tel"
+          autoComplete={lead ? "tel" : "off"}
+          maxLength={24}
+          placeholder="077 123 4567"
+          aria-required="true"
+          aria-invalid={error("phone") ? true : undefined}
+          aria-describedby={describedBy(id("phone"), error("phone"), lead)}
+          value={member.phone}
+          onChange={(e) => onChange(index, "phone", e.target.value)}
+          onBlur={() => onBlur(key("phone"))}
+        />
+      </Field>
+    </div>
+  );
+}
+
 /* ───────────────────────────── component ────────────────────────────── */
 
 export function RegisterWizard() {
@@ -254,7 +352,7 @@ export function RegisterWizard() {
     const result = validatePerson(member, index);
     setError(key, result.ok ? undefined : result.fieldErrors[key]);
     // Show the number the way we will store it, so there are no surprises.
-    if (field === "phone" && result.ok) {
+    if (field === "phone") {
       const normal = normalizePhone(member.phone);
       if (normal && formatPhone(normal) !== member.phone) setMember(index, "phone", formatPhone(normal));
     }
@@ -400,94 +498,6 @@ export function RegisterWizard() {
   };
 
   /* ── pieces ──────────────────────────────────────────────────────── */
-
-  const person = (index: number) => {
-    const member = draft.members[index];
-    const lead = index === 0;
-    const key = (field: keyof PersonInput) => `members.${index}.${field}`;
-    const id = (field: keyof PersonInput) => fieldId(key(field));
-    const error = (field: keyof PersonInput) => errors[key(field)];
-    return (
-      <div className="grid gap-x-7 gap-y-6 sm:grid-cols-2">
-        <Field id={id("fullName")} label="Full name" required error={error("fullName")}>
-          <input
-            id={id("fullName")}
-            className="px-input"
-            type="text"
-            autoComplete={lead ? "name" : "off"}
-            autoCapitalize="words"
-            spellCheck={false}
-            maxLength={80}
-            aria-required="true"
-            aria-invalid={error("fullName") ? true : undefined}
-            aria-describedby={describedBy(id("fullName"), error("fullName"))}
-            value={member.fullName}
-            onChange={(e) => setMember(index, "fullName", e.target.value)}
-            onBlur={() => validateOnBlur(key("fullName"))}
-          />
-        </Field>
-        <Field id={id("studentId")} label="Student ID" required error={error("studentId")} hint="Exactly as printed on the student card.">
-          <input
-            id={id("studentId")}
-            className="px-input data"
-            type="text"
-            autoComplete="off"
-            autoCapitalize="characters"
-            spellCheck={false}
-            maxLength={24}
-            aria-required="true"
-            aria-invalid={error("studentId") ? true : undefined}
-            aria-describedby={describedBy(id("studentId"), error("studentId"), true)}
-            value={member.studentId}
-            onChange={(e) => setMember(index, "studentId", e.target.value)}
-            onBlur={() => validateOnBlur(key("studentId"))}
-          />
-        </Field>
-        <Field
-          id={id("email")}
-          label="University email"
-          required
-          error={error("email")}
-          hint={event.requireUniversityEmail ? "Your university inbox — not Gmail or Outlook." : undefined}
-        >
-          <input
-            id={id("email")}
-            className="px-input data"
-            type="email"
-            inputMode="email"
-            autoComplete={lead ? "email" : "off"}
-            autoCapitalize="none"
-            spellCheck={false}
-            maxLength={120}
-            placeholder="name@students.nsbm.ac.lk"
-            aria-required="true"
-            aria-invalid={error("email") ? true : undefined}
-            aria-describedby={describedBy(id("email"), error("email"), event.requireUniversityEmail)}
-            value={member.email}
-            onChange={(e) => setMember(index, "email", e.target.value)}
-            onBlur={() => validateOnBlur(key("email"))}
-          />
-        </Field>
-        <Field id={id("phone")} label="Contact number" required error={error("phone")} hint={lead ? "WhatsApp preferred — we use it for event updates." : undefined}>
-          <input
-            id={id("phone")}
-            className="px-input data"
-            type="tel"
-            inputMode="tel"
-            autoComplete={lead ? "tel" : "off"}
-            maxLength={24}
-            placeholder="077 123 4567"
-            aria-required="true"
-            aria-invalid={error("phone") ? true : undefined}
-            aria-describedby={describedBy(id("phone"), error("phone"), lead)}
-            value={member.phone}
-            onChange={(e) => setMember(index, "phone", e.target.value)}
-            onBlur={() => validateOnBlur(key("phone"))}
-          />
-        </Field>
-      </div>
-    );
-  };
 
   /* ── loading / closed / done ─────────────────────────────────────── */
 
@@ -703,7 +713,7 @@ export function RegisterWizard() {
             </div>
           )}
 
-          {step === 1 && person(0)}
+          {step === 1 && <PersonFields index={0} member={draft.members[0]} errors={errors} onChange={setMember} onBlur={validateOnBlur} />}
 
           {step === 2 && (
             <div className="space-y-9">
@@ -729,7 +739,7 @@ export function RegisterWizard() {
                         <span className="px-chip px-chip-berry">Required</span>
                       )}
                     </div>
-                    {person(index)}
+                    <PersonFields index={index} member={draft.members[index]} errors={errors} onChange={setMember} onBlur={validateOnBlur} />
                   </div>
                 ),
               )}
@@ -776,7 +786,7 @@ export function RegisterWizard() {
                       </button>
                     </div>
                     <p className="data mt-2 break-all text-snow-300">
-                      {member.studentId.trim()} · {member.email.trim().toLowerCase()} · {member.phone.trim()}
+                      {member.studentId.trim()} · {member.email.trim().toLowerCase()} · {formatPhone(normalizePhone(member.phone) ?? member.phone.trim())}
                     </p>
                   </li>
                 ))}

@@ -7,9 +7,13 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-site request blocked.", 403);
 
+  // Per address, plus a ceiling for everyone combined: the address comes from a
+  // header, and headers can be forged when the server is exposed without a proxy.
   const key = `login:${clientIp(request)}`;
   const limit = rateLimit(key, 8, 15 * 60_000);
   if (!limit.ok) return tooManyRequests(limit.retryAfter);
+  const everyone = rateLimit("login:*", 120, 15 * 60_000);
+  if (!everyone.ok) return tooManyRequests(everyone.retryAfter);
 
   if (!isAdminConfigured()) {
     return fail("The admin panel is locked: set ADMIN_PASSWORD (8+ characters) in the environment and restart the server.", 503);

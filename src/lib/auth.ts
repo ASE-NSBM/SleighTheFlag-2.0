@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { fail, isHttps, isSameOrigin } from "./http";
 
 /**
@@ -80,6 +81,9 @@ export function readSessionToken(token: string | undefined | null): AdminSession
 /** Reads the session from the request cookies (Server Components & Route Handlers). */
 export async function getAdminSession(): Promise<AdminSession | null> {
   const store = await cookies();
+  // Checking the expiry needs the current time, so this is strictly per-request work:
+  // tell Next.js not to attempt it while prerendering.
+  await connection();
   return readSessionToken(store.get(SESSION_COOKIE)?.value);
 }
 

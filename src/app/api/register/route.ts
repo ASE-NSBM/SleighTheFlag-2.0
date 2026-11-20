@@ -14,8 +14,9 @@ const CLOSED_MESSAGE: Record<Exclude<RegistrationReason, "open">, string> = {
 
 /** Public team registration. */
 export async function POST(request: Request) {
-  // Generous on purpose: a whole campus can sit behind one Wi-Fi address.
-  const limit = rateLimit(`register:${clientIp(request)}`, 30, 10 * 60_000);
+  // Generous on purpose: a whole campus can sit behind one Wi-Fi address, and
+  // launch day sends everyone here at once. This only has to stop scripted floods.
+  const limit = rateLimit(`register:${clientIp(request)}`, 150, 10 * 60_000);
   if (!limit.ok) return tooManyRequests(limit.retryAfter);
 
   const body = await readJson(request);

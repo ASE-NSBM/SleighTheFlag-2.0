@@ -30,6 +30,7 @@ export function Hud() {
   const active = useSyncExternalStore(subscribeActive, getActive, getServerActive);
   const [solid, setSolid] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [typing, setTyping] = useState(false);
   const fillRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
@@ -66,6 +67,21 @@ export function Hud() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  /* While someone is filling in the form, the hotbar steps out of the way. */
+  useEffect(() => {
+    const onFocus = (event: FocusEvent) => {
+      const target = event.target as HTMLElement | null;
+      setTyping(Boolean(target && isTyping(target) && target.closest("#register")));
+    };
+    const onBlur = () => setTyping(false);
+    document.addEventListener("focusin", onFocus);
+    document.addEventListener("focusout", onBlur);
+    return () => {
+      document.removeEventListener("focusin", onFocus);
+      document.removeEventListener("focusout", onBlur);
+    };
   }, []);
 
   /* Mobile menu: lock the page behind it and move focus in and back out. */
@@ -138,7 +154,7 @@ export function Hud() {
       )}
 
       {/* Tablet & desktop: XP bar + hotbar */}
-      <div className="hud">
+      <div className="hud" data-tucked={typing}>
         <div className="xp" aria-hidden="true">
           <div ref={fillRef} className="xp-fill" style={{ transform: "scaleX(0)" }} />
           <div className="xp-ticks" />

@@ -135,9 +135,9 @@ export function Guild() {
 
 export function SiteFooter() {
   return (
-    <footer className="stage px-[clamp(16px,4vw,56px)] pb-[calc(var(--hud-h)+28px)]">
+    <footer className="stage bg-night-950/90 px-[clamp(16px,4vw,56px)] pb-[calc(var(--hud-h)+28px)] pt-10 shadow-[0_-4px_0_0_#000,0_-8px_0_0_rgb(165_222_254/0.14)] [backdrop-filter:blur(10px)]">
       <div className="mx-auto max-w-[1240px]">
-          <div className="flex flex-col items-start justify-between gap-8 border-t-4 border-night-700 pt-8 md:flex-row md:items-center">
+          <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
             <a href="#spawn" className="flex items-center gap-3 no-underline">
               <Sprite name="flag" size={32} />
               <span className="font-pixel text-[0.6875rem] leading-relaxed text-snow-50">

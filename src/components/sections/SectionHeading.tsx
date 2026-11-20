@@ -14,7 +14,7 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ id, kicker, sprite, children, lead, center }: SectionHeadingProps) {
   return (
-    <header className={center ? "mx-auto max-w-[760px] text-center" : undefined}>
+    <header className={center ? "px-box px-frost mx-auto max-w-[780px] px-6 py-7 text-center sm:px-9" : undefined}>
       <p className="kicker">
         <Sprite name={sprite} size={16} />
         {kicker}

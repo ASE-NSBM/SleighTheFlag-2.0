@@ -5,7 +5,7 @@ import { validateTeamName } from "@/lib/validation";
 
 /** Live "is this team name free?" check for the registration form. */
 export async function GET(request: Request) {
-  const limit = rateLimit(`team-name:${clientIp(request)}`, 90, 60_000);
+  const limit = rateLimit(`team-name:${clientIp(request)}`, 300, 60_000);
   if (!limit.ok) return tooManyRequests(limit.retryAfter);
 
   const name = new URL(request.url).searchParams.get("name") ?? "";

@@ -11,9 +11,11 @@ export function Hero() {
     <section id="spawn" data-section className="section hero" aria-labelledby="spawn-title">
       <div className="section-inner">
         <div className="max-w-[760px]">
-          <a href="#guild" className="px-chip px-chip-gold pop-in no-underline" style={{ padding: "8px 12px 8px 8px" }}>
-            <Image src={organizer.logo} alt="" width={24} height={24} className="h-6 w-6" style={{ imageRendering: "auto" }} />
-            {organizer.shortName} · {organizer.university} presents
+          <a href="#guild" className="px-chip px-chip-gold pop-in max-w-full whitespace-normal no-underline" style={{ padding: "8px 12px 8px 8px" }}>
+            <Image src={organizer.logo} alt="" width={24} height={24} className="h-6 w-6 shrink-0" style={{ imageRendering: "auto" }} />
+            <span>
+              {organizer.shortName} · {organizer.university} presents
+            </span>
           </a>
 
           <h1 id="spawn-title" className="title mt-6" aria-label={event.fullName}>

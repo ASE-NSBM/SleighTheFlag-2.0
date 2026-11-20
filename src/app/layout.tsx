@@ -60,7 +60,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${pressStart.variable} ${pixelify.variable} ${vt323.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${pressStart.variable} ${pixelify.variable} ${vt323.variable}`}>
       <body>
         {children}
         {/* Without JavaScript nothing can scroll-reveal or lift the loading curtain. */}
