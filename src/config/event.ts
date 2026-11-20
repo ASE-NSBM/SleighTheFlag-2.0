@@ -29,10 +29,12 @@ export const event = {
   dates: {
     registrationOpens: "2026-11-20T00:00:00+05:30",
     registrationCloses: "2026-12-12T23:59:00+05:30",
-    briefing: "2026-12-16T19:00:00+05:30",
-    eventStart: "2026-12-19T09:00:00+05:30",
-    eventEnd: "2026-12-19T21:00:00+05:30",
-    awards: "2026-12-19T21:30:00+05:30",
+    briefing: "2026-12-14T19:00:00+05:30",
+    // The competition day — 15 December 2026 — is confirmed by the organisers.
+    // The start/end times, the briefing and the registration deadline are still placeholders.
+    eventStart: "2026-12-15T09:00:00+05:30",
+    eventEnd: "2026-12-15T21:00:00+05:30",
+    awards: "2026-12-15T21:30:00+05:30",
   },
 
   /** ⚠ PLACEHOLDER — format & venue. */
