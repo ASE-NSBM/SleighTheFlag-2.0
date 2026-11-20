@@ -1,7 +1,7 @@
 import { TIMEZONE } from "@/config/event";
 import { requireAdmin } from "@/lib/auth";
 import { participantsSheet, teamsSheet, toCsv, toJson, toXlsx } from "@/lib/export";
-import { fail } from "@/lib/http";
+import { fail, serverFailure } from "@/lib/http";
 import { listTeams } from "@/lib/teams";
 import { isTeamStatus } from "@/lib/types";
 
@@ -52,6 +52,6 @@ export async function GET(request: Request) {
     return fail("Unknown export format.", 422);
   } catch (error) {
     console.error("[admin/export] failed:", error);
-    return fail("Couldn't build the export.", 500);
+    return serverFailure(error, "Couldn't build the export.", "admin");
   }
 }

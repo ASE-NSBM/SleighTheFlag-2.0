@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { fail, isRecord, ok, readJson } from "@/lib/http";
+import { fail, isRecord, ok, readJson, serverFailure } from "@/lib/http";
 import { getRegistrationStatus, updateSettings } from "@/lib/teams";
 import type { AdminSettings } from "@/lib/types";
 
@@ -27,6 +27,6 @@ export async function PATCH(request: Request) {
     return ok({ settings, status: await getRegistrationStatus() });
   } catch (error) {
     console.error("[admin/settings] update failed:", error);
-    return fail("Couldn't save the settings.", 500);
+    return serverFailure(error, "Couldn't save the settings.", "admin");
   }
 }

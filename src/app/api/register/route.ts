@@ -1,5 +1,5 @@
 import { organizer } from "@/config/event";
-import { clientIp, fail, isRecord, ok, readJson, tooManyRequests } from "@/lib/http";
+import { clientIp, fail, isRecord, ok, readJson, serverFailure, tooManyRequests } from "@/lib/http";
 import { rateLimit } from "@/lib/rate-limit";
 import { ConflictError, createTeam, getRegistrationStatus } from "@/lib/teams";
 import type { RegistrationReason } from "@/lib/types";
@@ -55,6 +55,6 @@ export async function POST(request: Request) {
       return fail("Some of these details are already registered.", 409, { fieldErrors: error.fieldErrors });
     }
     console.error("[register] unexpected failure:", error);
-    return fail(`Something went wrong on our side. Please try again, or email ${organizer.email}.`, 500);
+    return serverFailure(error, `Something went wrong on our side. Please try again, or email ${organizer.email}.`, "public");
   }
 }

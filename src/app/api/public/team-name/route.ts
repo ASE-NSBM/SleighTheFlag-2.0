@@ -1,4 +1,4 @@
-import { clientIp, fail, ok, tooManyRequests } from "@/lib/http";
+import { clientIp, fail, ok, serverFailure, tooManyRequests } from "@/lib/http";
 import { rateLimit } from "@/lib/rate-limit";
 import { isTeamNameTaken } from "@/lib/teams";
 import { validateTeamName } from "@/lib/validation";
@@ -16,6 +16,6 @@ export async function GET(request: Request) {
     return ok({ name: parsed.data, available: !(await isTeamNameTaken(parsed.data)) });
   } catch (error) {
     console.error("[team-name] unexpected failure:", error);
-    return fail("Couldn't check that name right now.", 500);
+    return serverFailure(error, "Couldn't check that name right now.", "public");
   }
 }

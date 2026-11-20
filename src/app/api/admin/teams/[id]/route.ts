@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { fail, isRecord, ok, readJson } from "@/lib/http";
+import { fail, isRecord, ok, readJson, serverFailure } from "@/lib/http";
 import { ConflictError, deleteTeams, updateTeam } from "@/lib/teams";
 import { isTeamStatus, type TeamInput, type TeamStatus } from "@/lib/types";
 import { validateTeam } from "@/lib/validation";
@@ -39,7 +39,7 @@ export async function PATCH(request: Request, context: RouteContext<"/api/admin/
   } catch (error) {
     if (error instanceof ConflictError) return fail("Some of these details are already registered.", 409, { fieldErrors: error.fieldErrors });
     console.error("[admin/teams] update failed:", error);
-    return fail("Couldn't save the changes.", 500);
+    return serverFailure(error, "Couldn't save the changes.", "admin");
   }
 }
 
@@ -56,6 +56,6 @@ export async function DELETE(request: Request, context: RouteContext<"/api/admin
     return ok({ removed });
   } catch (error) {
     console.error("[admin/teams] delete failed:", error);
-    return fail("Couldn't remove the team.", 500);
+    return serverFailure(error, "Couldn't remove the team.", "admin");
   }
 }

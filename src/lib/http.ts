@@ -1,4 +1,5 @@
 import "server-only";
+import { DatabaseConfigError } from "./db";
 import type { FieldErrors } from "./types";
 
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
@@ -18,6 +19,33 @@ export function tooManyRequests(retryAfter: number): Response {
   return fail("Too many requests — slow down and try again in a moment.", 429, {
     headers: { "Retry-After": String(retryAfter) },
   });
+}
+
+/** A failure that means "the database could not be reached", with a short reason — or null. */
+function connectionProblem(error: unknown): string | null {
+  if (!(error instanceof Error)) return null;
+  const code = (error as { code?: unknown }).code;
+  if (typeof code === "string" && /^(SERVER_ERROR|HRANA_|URL_)/.test(code)) return error.message;
+  if (/fetch failed/i.test(error.message)) {
+    const cause = (error as { cause?: { code?: string; message?: string } }).cause;
+    return cause?.code ?? cause?.message ?? "network error";
+  }
+  return null;
+}
+
+/**
+ * The response for an unexpected failure.
+ *
+ * The public only ever learns "try again later". A signed-in organiser is told
+ * what is actually wrong when it is a database set-up problem — a missing or
+ * mistyped connection is the one failure they can fix themselves.
+ */
+export function serverFailure(error: unknown, fallback: string, audience: "public" | "admin"): Response {
+  const setup = error instanceof DatabaseConfigError ? error.message : null;
+  const unreachable = setup ? null : connectionProblem(error);
+  if (!setup && !unreachable) return fail(fallback, 500);
+  if (audience === "public") return fail("Registration is temporarily unavailable. Please try again in a little while.", 503);
+  return fail(setup ?? `The database can't be reached (${String(unreachable).slice(0, 180)}). Check DATABASE_URL and DATABASE_AUTH_TOKEN, then redeploy.`, 503);
 }
 
 /** Best-effort client address. Behind a proxy make sure it sets X-Forwarded-For. */

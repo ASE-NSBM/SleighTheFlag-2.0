@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { Sprite } from "@/components/ui/Sprite";
 import type { SpriteName } from "@/components/ui/sprites";
 import { useToast } from "@/components/ui/Toast";
@@ -27,7 +27,7 @@ interface Receipt {
   members: PersonInput[];
 }
 
-type Phase = "loading" | "form" | "closed" | "done";
+type Phase = "loading" | "form" | "closed" | "unavailable" | "done";
 type NameCheck = { state: "idle" | "checking" | "free" | "taken" };
 
 const STEPS: { label: string; title: string; blurb: string; sprite: SpriteName }[] = [
@@ -217,26 +217,39 @@ export function RegisterWizard() {
   const nameRequest = useRef<AbortController | null>(null);
 
   /* Find out whether registration is open, then restore any saved draft. */
+  const alive = useRef(true);
+
+  const applyStatus = useCallback((next: RegistrationStatus | null) => {
+    if (!alive.current) return;
+    setStatus(next);
+    if (!next) {
+      // The server couldn't answer. Better to say so now than after sixteen fields.
+      setPhase("unavailable");
+      return;
+    }
+    const saved = loadDraft();
+    if (saved) {
+      setDraft(saved);
+      setRestored(true);
+    }
+    setPhase(next.open ? "form" : "closed");
+  }, []);
+
   useEffect(() => {
-    let alive = true;
-    fetchRegistrationStatus().then((next) => {
-      if (!alive) return;
-      setStatus(next);
-      const saved = loadDraft();
-      if (saved) {
-        setDraft(saved);
-        setRestored(true);
-      }
-      // If the status check itself failed, show the form anyway — the server has the final say.
-      setPhase(next && !next.open ? "closed" : "form");
-    });
+    alive.current = true;
+    void fetchRegistrationStatus().then(applyStatus);
     return () => {
-      alive = false;
+      alive.current = false;
       window.clearTimeout(saveTimer.current);
       window.clearTimeout(nameTimer.current);
       nameRequest.current?.abort();
     };
-  }, []);
+  }, [applyStatus]);
+
+  const retryStatus = () => {
+    setPhase("loading");
+    void fetchRegistrationStatus(true).then(applyStatus);
+  };
 
   /* After a step change or a failed check, put the keyboard where it is needed. */
   useEffect(() => {
@@ -508,6 +521,31 @@ export function RegisterWizard() {
         <div className="skeleton mt-8 h-14 w-full" />
         <div className="skeleton mt-6 h-14 w-full" />
         <div className="skeleton mt-8 h-12 w-40" />
+      </div>
+    );
+  }
+
+  if (phase === "unavailable") {
+    return (
+      <div className="px-box px-solid snowcap mx-auto max-w-[640px] p-7 text-center sm:p-10">
+        <Sprite name="snowflake" size={64} className="mx-auto" />
+        <h3 className="h-section mt-6 !text-[1.125rem]">Registration is snowed in</h3>
+        <p className="mt-4 text-snow-200" role="status">
+          We couldn&apos;t reach the registration desk just now. Nothing is lost — give it a moment and try again.
+        </p>
+        <button
+          type="button"
+          className="px-btn px-btn-pine mt-7"
+          onClick={retryStatus}
+        >
+          Try again
+        </button>
+        <p className="mt-6 text-snow-300">
+          Still stuck? Email{" "}
+          <a className="text-gold-300 underline decoration-2 underline-offset-4" href={`mailto:${organizer.email}`}>
+            {organizer.email}
+          </a>
+        </p>
       </div>
     );
   }

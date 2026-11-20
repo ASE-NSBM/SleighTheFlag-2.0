@@ -26,8 +26,16 @@ const vt323 = VT323({
   display: "swap",
 });
 
+/**
+ * Base URL for link-preview images. Set NEXT_PUBLIC_SITE_URL to pin it; on
+ * Vercel it otherwise follows the project's production domain automatically.
+ */
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(event.siteUrl),
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${event.fullName} — ${event.kicker}`,
     template: `%s · ${event.fullName}`,

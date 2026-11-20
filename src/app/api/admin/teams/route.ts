@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { fail, isRecord, ok, readJson } from "@/lib/http";
+import { fail, isRecord, ok, readJson, serverFailure } from "@/lib/http";
 import { ConflictError, createTeam, getRegistrationStatus, getSettings, listTeams } from "@/lib/teams";
 import { isTeamStatus } from "@/lib/types";
 import { validateTeam } from "@/lib/validation";
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return ok({ teams, settings, status, user: session.user });
   } catch (error) {
     console.error("[admin/teams] list failed:", error);
-    return fail("Couldn't load the teams.", 500);
+    return serverFailure(error, "Couldn't load the teams.", "admin");
   }
 }
 
@@ -39,6 +39,6 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof ConflictError) return fail("Some of these details are already registered.", 409, { fieldErrors: error.fieldErrors });
     console.error("[admin/teams] create failed:", error);
-    return fail("Couldn't create the team.", 500);
+    return serverFailure(error, "Couldn't create the team.", "admin");
   }
 }

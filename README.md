@@ -77,9 +77,9 @@ one-person team can be let through as an exception.
 | `ADMIN_PASSWORD` | **yes** | Admin password. The panel stays locked until this is 8+ characters. |
 | `ADMIN_USERNAME` | no | Admin username (default `admin`). |
 | `SESSION_SECRET` | recommended | Signs the admin session cookie (`openssl rand -hex 32`). When empty it is derived from the password. |
-| `NEXT_PUBLIC_SITE_URL` | recommended | Public URL, used for link-preview cards. |
-| `DATABASE_URL` | no | Empty → local file `./data/sleigh-the-flag.db`. Or `file:/path/to.db`, or `libsql://…` for Turso. |
-| `DATABASE_AUTH_TOKEN` | with Turso | Auth token for a hosted libSQL database. |
+| `NEXT_PUBLIC_SITE_URL` | recommended | Public URL, used for link-preview cards. On Vercel it defaults to the production domain. |
+| `DATABASE_URL` | on serverless | Empty → local file `./data/sleigh-the-flag.db`. Or `file:/path/to.db`, or `libsql://…` for Turso. `TURSO_DATABASE_URL` works too. |
+| `DATABASE_AUTH_TOKEN` | with Turso | Auth token for the hosted database. `TURSO_AUTH_TOKEN` works too. |
 
 ## Database
 
@@ -89,12 +89,47 @@ automatically on first use.
 - **A server with a disk (VPS, Docker volume):** leave `DATABASE_URL` empty. Everything is stored in
   `data/sleigh-the-flag.db`. Back it up by copying that file. The `data/` folder is git-ignored —
   it contains personal data and must never be committed.
-- **Serverless hosting (Vercel, Netlify…):** the disk there is not persistent. Create a free
-  [Turso](https://turso.tech) database and set `DATABASE_URL` + `DATABASE_AUTH_TOKEN`.
+- **Serverless hosting (Vercel, Netlify…):** the disk there is not persistent, so a hosted
+  [Turso](https://turso.tech) database is required — see [Deploying to Vercel](#deploying-to-vercel).
+  Without one the site still loads, but registration reports itself unavailable and the admin
+  panel tells you the database is missing. It never falls back to a temporary file.
 
-## Deployment
+## Deploying to Vercel
 
-**Node server**
+The repository deploys as-is — Vercel detects Next.js and needs no build settings.
+
+1. **Import the project.** In Vercel: *Add New → Project*, pick this GitHub repository, keep the
+   defaults. (The first deploy will work, but registration stays unavailable until step 2.)
+2. **Add the database.** In the project's *Storage* tab, create a **Turso** database and connect it
+   to the project. That adds `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`, which the app reads
+   automatically. (Created the database on turso.tech instead? Add its URL and token yourself as
+   `DATABASE_URL` and `DATABASE_AUTH_TOKEN`.)
+3. **Add the admin sign-in.** In *Settings → Environment Variables* (Production):
+
+   | Name | Value |
+   | --- | --- |
+   | `ADMIN_PASSWORD` | a long random password — `openssl rand -base64 24` |
+   | `SESSION_SECRET` | `openssl rand -hex 32` |
+   | `ADMIN_USERNAME` | optional, defaults to `admin` |
+   | `NEXT_PUBLIC_SITE_URL` | optional — your final URL, e.g. `https://stf.example.lk`. Left empty, link previews use the project's production domain. |
+
+4. **Redeploy** (*Deployments → ⋯ → Redeploy*) so the new variables take effect.
+5. **Check it.** Open `/admin`, sign in, and make sure the Overview loads without a red error.
+   Register a test team on the public page, see it appear in *Teams*, then delete it.
+6. **Custom domain** (optional): *Settings → Domains*, then point a `CNAME` at Vercel as shown there.
+
+Good to know on Vercel:
+
+- **Keep the function next to the database.** Vercel runs functions in `iad1` (US East) by default.
+  If you create the Turso database in another region, set the same area under
+  *Settings → Functions → Function Region*. Pages themselves are served from the CDN either way.
+- **Rate limiting is per instance.** The built-in limiter lives in memory, so on serverless it is
+  only a speed bump. Turn on Vercel's Firewall rules if you expect abuse.
+- **Changing dates or wording** means editing `src/config/event.ts` and pushing — every push to the
+  main branch redeploys.
+- **Tables are created automatically** on the first request; there is no migration step.
+
+## Deploying to your own server
 
 ```bash
 npm ci
@@ -104,11 +139,8 @@ npm start            # listens on :3000 (PORT=8080 npm start to change)
 
 Run it behind a reverse proxy (nginx, Caddy, Cloudflare) that terminates HTTPS and forwards
 `X-Forwarded-For` and `X-Forwarded-Proto`. Rate limiting (registration, login) is keyed on the
-client address taken from that header.
-
-**Vercel:** import the repository, add the environment variables, and use a Turso database.
-The built-in rate limiter is in-memory, so on serverless it only acts per instance — add the
-platform's own protection if you expect abuse.
+client address taken from that header. Leave `DATABASE_URL` empty to store everything in
+`data/sleigh-the-flag.db`, and keep that folder on a persistent disk.
 
 ## Project structure
 

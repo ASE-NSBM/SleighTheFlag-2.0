@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth";
-import { fail, isRecord, ok, readJson } from "@/lib/http";
+import { fail, isRecord, ok, readJson, serverFailure } from "@/lib/http";
 import { deleteTeams, setTeamsStatus } from "@/lib/teams";
 import type { TeamStatus } from "@/lib/types";
 
@@ -24,6 +24,6 @@ export async function POST(request: Request) {
     return ok({ affected: await setTeamsStatus(ids, status) });
   } catch (error) {
     console.error("[admin/teams] bulk action failed:", error);
-    return fail("Couldn't apply that action.", 500);
+    return serverFailure(error, "Couldn't apply that action.", "admin");
   }
 }

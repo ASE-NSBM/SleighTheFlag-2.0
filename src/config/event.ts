@@ -25,9 +25,6 @@ export const event = {
   description:
     "Sleigh The Flag 2.0 is a Christmas-season Capture The Flag competition organised by the Association of Software Engineering (ASE) of NSBM Green University. Register your team and take on web, crypto, reversing, forensics and more.",
 
-  /** Public URL of the deployed site (used for social cards / metadata). */
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-
   /** ⚠ PLACEHOLDER — confirm every date. */
   dates: {
     registrationOpens: "2026-11-20T00:00:00+05:30",
