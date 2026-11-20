@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Boot } from "@/components/hud/Boot";
 import { ConsoleEgg } from "@/components/hud/ConsoleEgg";
 import { Hud } from "@/components/hud/Hud";
@@ -13,6 +14,12 @@ import { Rules } from "@/components/sections/Rules";
 import { Timeline } from "@/components/sections/Timeline";
 import { ToastProvider } from "@/components/ui/Toast";
 import { WorldMount } from "@/components/world/WorldMount";
+import { structuredDataJson } from "@/lib/seo";
+
+/** This page is the one true address of the site, whatever query string a link carries. */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * The home page. One long scroll: each <section data-section> is a stop on the
@@ -22,6 +29,8 @@ import { WorldMount } from "@/components/world/WorldMount";
 export default function Home() {
   return (
     <ToastProvider>
+      {/* schema.org facts for search and answer engines: the event, the organiser and the FAQ. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson() }} />
       <a href="#main" className="skip-link sr-only-focusable">
         Skip to content
       </a>

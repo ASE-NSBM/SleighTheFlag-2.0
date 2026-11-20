@@ -23,7 +23,7 @@ export function Hero() {
               <span className="title-word title-berry" data-text="Sleigh">
                 Sleigh
               </span>
-            </span>
+            </span>{" "}
             <span className="block" aria-hidden="true">
               <span className="title-word title-ice" data-text="The">
                 The
@@ -31,6 +31,8 @@ export function Hero() {
               <span className="title-word title-pine" data-text="Flag">
                 Flag
               </span>
+              {/* A word break for text-only readers; it takes no room on screen. */}
+              <span className="sr-only"> </span>
               <span className="title-version">{event.edition}</span>
             </span>
           </h1>

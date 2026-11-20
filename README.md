@@ -78,6 +78,8 @@ one-person team can be let through as an exception.
 | `ADMIN_USERNAME` | no | Admin username (default `admin`). |
 | `SESSION_SECRET` | recommended | Signs the admin session cookie (`openssl rand -hex 32`). When empty it is derived from the password. |
 | `NEXT_PUBLIC_SITE_URL` | recommended | Public URL, used for link-preview cards. On Vercel it defaults to the production domain. |
+| `GOOGLE_SITE_VERIFICATION` | no | Verification code from Google Search Console (the `content` value of its meta tag). |
+| `BING_SITE_VERIFICATION` | no | Verification code from Bing Webmaster Tools. |
 | `DATABASE_URL` | on serverless | Empty → local file `./data/sleigh-the-flag.db`. Or `file:/path/to.db`, or `libsql://…` for Turso. `TURSO_DATABASE_URL` works too. |
 | `DATABASE_AUTH_TOKEN` | with Turso | Auth token for the hosted database. `TURSO_AUTH_TOKEN` works too. |
 
@@ -141,6 +143,40 @@ Run it behind a reverse proxy (nginx, Caddy, Cloudflare) that terminates HTTPS a
 `X-Forwarded-For` and `X-Forwarded-Proto`. Rate limiting (registration, login) is keyed on the
 client address taken from that header. Leave `DATABASE_URL` empty to store everything in
 `data/sleigh-the-flag.db`, and keep that folder on a persistent disk.
+
+## Search and AI visibility (SEO · AEO · GEO)
+
+Built in, and all generated from `src/config/event.ts` so the facts never drift apart:
+
+| What | Where | For |
+| --- | --- | --- |
+| Title, description, canonical URL, Open Graph / X cards | `src/app/layout.tsx`, `src/lib/seo.ts` | Search results and link previews |
+| `robots.txt` | `src/app/robots.ts` | Lets search *and* AI crawlers in; keeps `/admin` and `/api` out |
+| `sitemap.xml` | `src/app/sitemap.ts` | Tells search engines the page exists |
+| Structured data (schema.org `Event`, `Organization`, `WebSite`, `FAQPage`) | `src/lib/seo.ts` | Event listings, knowledge panels, answer engines |
+| Question-and-answer section with real headings | `src/components/sections/Faq.tsx` | Featured snippets, voice and AI answers |
+| `llms.txt` | `src/app/llms.txt/route.ts` | A plain-text briefing for AI assistants |
+| Web app manifest | `src/app/manifest.ts` | Name and icon when saved to a phone |
+
+Every fact is in the HTML the server sends, so crawlers that do not run JavaScript still read
+everything.
+
+**After you deploy**
+
+1. Set `NEXT_PUBLIC_SITE_URL` to the final address once you have a custom domain, and redeploy —
+   canonical links, the sitemap and structured data are all built from it.
+2. Add the site to [Google Search Console](https://search.google.com/search-console) and
+   [Bing Webmaster Tools](https://www.bing.com/webmasters), then submit `/sitemap.xml` in each.
+   If they ask for a meta tag, put the code in `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
+   (Bing matters twice: several AI assistants search through it.)
+3. Check the structured data with Google's [Rich Results Test](https://search.google.com/test/rich-results).
+4. Set `attendance` (and `venue`) in the config as soon as the place is decided — search engines
+   only show an event listing when they know where it happens.
+5. Link to the site from ASE's and NSBM's own pages and social profiles. No amount of on-page
+   work replaces other trusted sites pointing at you.
+
+Search engines take days to weeks to pick a new site up, and nothing here can promise a ranking —
+it removes the obstacles and states the facts clearly.
 
 ## Project structure
 

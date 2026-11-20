@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { Sprite } from "@/components/ui/Sprite";
-import { faqs, organizer } from "@/config/event";
+import { organizer } from "@/config/event";
+import { allFaqs } from "@/lib/seo";
 import { SectionHeading } from "./SectionHeading";
 
 /** Questions on wooden signs. Native <details> keeps it accessible with zero JavaScript. */
@@ -16,11 +17,12 @@ export function Faq() {
           </Reveal>
 
           <div className="mt-8 space-y-6">
-            {faqs.map((item, index) => (
+            {allFaqs.map((item, index) => (
               <Reveal key={item.q} index={Math.min(index, 4)}>
                 <details className="px-box plank" name="faq">
                   <summary>
-                    {item.q}
+                    {/* A real heading: each question becomes a landmark for screen readers and for search. */}
+                    <h3 className="m-0 [font:inherit]">{item.q}</h3>
                     <Sprite name="chevron-down" size={12} className="text-gold-300" />
                   </summary>
                   <p className="plank-body">{item.a}</p>

@@ -20,6 +20,8 @@ export const event = {
   edition: "2.0",
   fullName: "Sleigh The Flag 2.0",
   kicker: "Inter-university Capture The Flag",
+  /** What follows the name in the browser tab and in search results. Keep the whole title under ~60 characters. */
+  searchTagline: "Capture The Flag (CTF) by ASE NSBM",
   tagline:
     "The North Pole has been breached. Gather your crew, crack the challenges and sleigh every flag before the snow settles.",
   description:
@@ -30,16 +32,28 @@ export const event = {
     registrationOpens: "2026-11-20T00:00:00+05:30",
     registrationCloses: "2026-12-12T23:59:00+05:30",
     briefing: "2026-12-14T19:00:00+05:30",
-    // The competition day — 15 December 2026 — is confirmed by the organisers.
-    // The start/end times, the briefing and the registration deadline are still placeholders.
+    // Confirmed by the organisers: the competition day (15 December 2026) and the
+    // scoreboard freeze at 3:00 pm, which is `eventEnd` — the moment submissions stop.
+    // Still placeholders: the start time, the awards time, the briefing and the registration deadline.
     eventStart: "2026-12-15T09:00:00+05:30",
-    eventEnd: "2026-12-15T21:00:00+05:30",
+    eventEnd: "2026-12-15T15:00:00+05:30",
     awards: "2026-12-15T21:30:00+05:30",
   },
 
   /** ⚠ PLACEHOLDER — format & venue. */
   format: "Jeopardy-style CTF",
   venue: "To be announced",
+  /**
+   * How people take part. Search engines only show an event listing when they
+   * know where it happens, so set this as soon as it is decided:
+   *   "onsite"  → also fill in `venue` (and `venueAddress` below)
+   *   "online"  → played remotely
+   *   "hybrid"  → both
+   *   "tba"     → not announced yet (the listing simply leaves the place out)
+   */
+  attendance: "tba" as "tba" | "onsite" | "online" | "hybrid",
+  /** Street address of the venue, for map results. Leave empty to use the organiser's address. */
+  venueAddress: "",
 
   /** ⚠ PLACEHOLDER — team size limits (leader included). */
   team: {
@@ -56,6 +70,20 @@ export const event = {
   /** Shown next to "flag format" in the About section. */
   flagFormat: "STF{c4ptur3_th3_fl4g}",
 } as const;
+
+/** Phrases people actually search for. Keep it short and honest. */
+export const keywords: string[] = [
+  "Sleigh The Flag",
+  "Sleigh The Flag 2.0",
+  "CTF Sri Lanka",
+  "Capture The Flag competition",
+  "inter-university CTF",
+  "cybersecurity competition Sri Lanka",
+  "NSBM CTF",
+  "ASE NSBM",
+  "NSBM Green University",
+  "student hacking competition",
+];
 
 /* ───────────────────────────── Organiser ──────────────────────────────── */
 /* Taken from ASE's own GreenExE 4.0 site (greenexe-4.asensbm.live).        */

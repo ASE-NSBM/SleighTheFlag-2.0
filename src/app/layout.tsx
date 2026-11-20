@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Pixelify_Sans, Press_Start_2P, VT323 } from "next/font/google";
-import { event, organizer } from "@/config/event";
+import { event, keywords, organizer } from "@/config/event";
+import { metaDescription, pageTitle } from "@/lib/seo";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 /* Chunky 8-bit capitals for titles, buttons and HUD labels. */
@@ -26,35 +28,46 @@ const vt323 = VT323({
   display: "swap",
 });
 
-/**
- * Base URL for link-preview images. Set NEXT_PUBLIC_SITE_URL to pin it; on
- * Vercel it otherwise follows the project's production domain automatically.
- */
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+const organiserName = `${organizer.name} (${organizer.shortName}), ${organizer.university}`;
+
+/** Ownership checks for Google Search Console and Bing Webmaster Tools (optional). */
+const verification = {
+  google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+  other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${event.fullName} — ${event.kicker}`,
+    default: pageTitle,
     template: `%s · ${event.fullName}`,
   },
-  description: event.description,
+  description: metaDescription,
   applicationName: event.fullName,
-  authors: [{ name: `${organizer.name} (${organizer.shortName}), ${organizer.university}` }],
-  keywords: ["CTF", "Capture The Flag", "Sleigh The Flag", "NSBM", "ASE", "cybersecurity", "Sri Lanka", "university competition"],
+  authors: [{ name: organiserName }],
+  creator: organiserName,
+  publisher: organiserName,
+  category: "technology",
+  keywords,
+  // Search engines may index the site and show full previews; the admin panel overrides this.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large", "max-video-preview": -1 },
+  },
+  verification,
   openGraph: {
     type: "website",
+    url: "/",
     siteName: event.fullName,
-    title: `${event.fullName} — ${event.kicker}`,
-    description: event.description,
-    locale: "en_LK",
+    title: pageTitle,
+    description: metaDescription,
+    locale: "en_GB",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${event.fullName} — ${event.kicker}`,
-    description: event.description,
+    title: pageTitle,
+    description: metaDescription,
   },
   formatDetection: { telephone: false },
 };
