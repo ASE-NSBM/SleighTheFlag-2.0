@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   if (!everyone.ok) return tooManyRequests(everyone.retryAfter);
 
   if (!isAdminConfigured()) {
-    return fail("The admin panel is locked: set ADMIN_PASSWORD (8+ characters) in the environment and restart the server.", 503);
+    return fail("Sign-in is switched off until an admin password is set — follow the steps above, then try again.", 503);
   }
 
   const body = await readJson(request, 4_000);
