@@ -1,4 +1,5 @@
 import { organizer } from "@/config/event";
+import { whatsappGroupUrl } from "@/config/private";
 import { clientIp, fail, isRecord, ok, readJson, serverFailure, tooManyRequests } from "@/lib/http";
 import { rateLimit } from "@/lib/rate-limit";
 import { ConflictError, createTeam, getRegistrationStatus } from "@/lib/teams";
@@ -47,6 +48,8 @@ export async function POST(request: Request) {
         teamName: team.name,
         university: team.university,
         members: team.members.map((member) => ({ fullName: member.fullName, isLeader: member.isLeader })),
+        // Only people who have just registered are handed the group invite.
+        whatsappUrl: whatsappGroupUrl,
       },
       201,
     );

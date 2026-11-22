@@ -21,6 +21,8 @@ interface Draft {
 }
 
 interface Receipt {
+  /** Invite to the participants' WhatsApp group, when the organisers have set one. */
+  whatsappUrl: string | null;
   code: string;
   teamName: string;
   university: string;
@@ -440,7 +442,7 @@ export function RegisterWizard() {
         body: JSON.stringify({ ...draft, consent: true, fax: trap }),
       });
       const data = (await response.json().catch(() => null)) as
-        | { ok: true; code: string; teamName: string; university: string }
+        | { ok: true; code: string; teamName: string; university: string; whatsappUrl?: string | null }
         | { ok: false; error: string; fieldErrors?: FieldErrors }
         | null;
 
@@ -450,7 +452,7 @@ export function RegisterWizard() {
         } catch {
           /* nothing to clean up */
         }
-        setReceipt({ code: data.code, teamName: data.teamName, university: data.university, members: draft.members });
+        setReceipt({ whatsappUrl: typeof data.whatsappUrl === "string" && data.whatsappUrl.startsWith("https://chat.whatsapp.com/") ? data.whatsappUrl : null, code: data.code, teamName: data.teamName, university: data.university, members: draft.members });
         focusNext.current = "heading";
         setPhase("done");
         toast({ title: "Quest accepted", body: `${data.teamName} is on the island.`, sprite: "flag" });
@@ -613,11 +615,25 @@ export function RegisterWizard() {
               </span>
             </div>
 
+            {receipt.whatsappUrl && (
+              <div className="mt-8 bg-pine-800/55 p-5 shadow-[0_0_0_4px_var(--color-pine-500),0_0_0_8px_#04060f]">
+                <h4 className="h-card">One more step: join the WhatsApp group</h4>
+                <p className="mt-2 text-snow-200">
+                  All announcements, briefing details and event-day updates are posted there. Share this link with every member of your team.
+                </p>
+                <a href={receipt.whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-btn px-btn-pine px-btn-lg mt-5">
+                  <Sprite name="phone" size={24} />
+                  Join the WhatsApp group
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </div>
+            )}
+
             <h4 className="kicker mt-8">What happens next</h4>
             <ol className="mt-4 list-none space-y-3 p-0 text-snow-200">
               {[
                 `${organizer.shortName} reviews your team against the student IDs and university emails you entered.`,
-                "The team leader is contacted with the confirmation and the briefing details.",
+                receipt.whatsappUrl ? "Confirmation and briefing details are announced in the WhatsApp group." : "The team leader is contacted with the confirmation and the briefing details.",
                 `Be ready when the hunt begins on ${formatStamp(event.dates.eventStart)}.`,
               ].map((line, index) => (
                 <li key={line} className="grid grid-cols-[28px_1fr] gap-3">
