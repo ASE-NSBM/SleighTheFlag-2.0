@@ -211,6 +211,7 @@ export function RegisterWizard() {
   const [formError, setFormError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [copied, setCopied] = useState(false);
+  const [universityIsOther, setUniversityIsOther] = useState(false);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const focusNext = useRef<string | null>(null);
@@ -750,18 +751,19 @@ export function RegisterWizard() {
                 />
               </Field>
 
-              <Field id={fieldId("university")} label="University / institute" required error={errors.university} hint="Pick from the list or type your own.">
+              <Field id={fieldId("university")} label="University / institute" required error={errors.university} hint={universityIsOther ? undefined : "Search the list. Not there? Choose “Other” and type it."}>
                 <UniversityPicker
                   id={fieldId("university")}
                   value={draft.university}
                   options={universities}
                   invalid={Boolean(errors.university)}
-                  describedBy={describedBy(fieldId("university"), errors.university, true)}
+                  describedBy={describedBy(fieldId("university"), errors.university, !universityIsOther)}
                   onChange={(value) => {
                     commit({ ...draft, university: value });
                     clearError("university");
                   }}
                   onBlur={() => validateOnBlur("university")}
+                  onCustomChange={setUniversityIsOther}
                 />
               </Field>
             </div>
