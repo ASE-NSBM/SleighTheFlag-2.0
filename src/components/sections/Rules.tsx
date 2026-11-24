@@ -8,23 +8,23 @@ export function Rules() {
     <section id="rules" data-section className="section" aria-labelledby="rules-title">
       <div className="section-inner">
         <Reveal className="panel-narrow side-right">
-          <div className="px-box px-frost snowcap p-6 sm:p-8">
+          <div className="px-box px-frost snowcap p-5 sm:p-8">
             <SectionHeading id="rules" kicker="Rules & eligibility" sprite="scroll">
               The <em>code</em> of the North
             </SectionHeading>
 
             <ol className="mt-7 list-none space-y-5 p-0">
               {rules.map((rule, index) => (
-                <li key={rule.title} className="grid grid-cols-[40px_1fr] gap-4">
+                <li key={rule.title} className="grid grid-cols-[40px_1fr] gap-4 max-sm:grid-cols-[28px_1fr] max-sm:gap-3">
                   <span
                     aria-hidden="true"
-                    className="font-pixel grid h-10 w-10 place-items-center bg-berry-700 text-[0.75rem] text-white shadow-[inset_0_3px_0_0_var(--color-berry-500),inset_0_-3px_0_0_var(--color-berry-800),0_0_0_3px_#04060f]"
+                    className="font-pixel grid h-10 w-10 place-items-center bg-berry-700 text-[0.75rem] text-white shadow-[inset_0_3px_0_0_var(--color-berry-500),inset_0_-3px_0_0_var(--color-berry-800),0_0_0_3px_#04060f] max-sm:h-7 max-sm:w-7 max-sm:text-[0.625rem]"
                   >
                     {index + 1}
                   </span>
                   <div>
                     <h3 className="h-card">{rule.title}</h3>
-                    <p className="mt-1.5 text-[1.0625rem] leading-normal text-snow-300">{rule.body}</p>
+                    <p className="mt-1.5 text-[1.0625rem] leading-normal text-snow-300 max-sm:mt-1 max-sm:text-[1rem]">{rule.body}</p>
                   </div>
                 </li>
               ))}

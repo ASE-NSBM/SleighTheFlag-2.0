@@ -49,7 +49,8 @@ export function Countdown() {
       {(now === null || current.target !== null) && (
         // A ticking clock read aloud every second helps nobody: the timer is exposed once, as a label.
         <div
-          className="mt-4 flex gap-4 sm:gap-5"
+          // Phones: four equal columns spanning the full width, matching the button above.
+          className="mt-4 grid grid-cols-4 gap-3 sm:flex sm:gap-5"
           role="timer"
           aria-label={left === null ? "Loading countdown" : `${cells[0][0]} days, ${cells[1][0]} hours and ${cells[2][0]} minutes left`}
         >

@@ -21,7 +21,7 @@ export function About() {
     <section id="about" data-section className="section" aria-labelledby="about-title">
       <div className="section-inner">
         <Reveal className="panel-narrow side-right">
-          <div className="px-box px-frost snowcap p-6 sm:p-8">
+          <div className="px-box px-frost snowcap p-5 sm:p-8">
             <SectionHeading id="about" kicker="Quest briefing" sprite="book">
               What is <em>Sleigh The Flag</em>?
             </SectionHeading>
@@ -33,15 +33,16 @@ export function About() {
                 challenges — every one you crack reveals a hidden <strong className="text-gold-300">flag</strong>, and every flag puts points on the
                 board.
               </p>
-              <p>
+              {/* Flavour text: phones skip it and go straight to the facts. */}
+              <p className="max-sm:hidden">
                 Bring your sharpest crew. Dig through web apps, break ciphers, pull binaries apart and follow tracks in the snow. The team holding the
                 most flags when the scoreboard freezes wins.
               </p>
             </div>
 
-            <dl className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <dl className="facts mt-7">
               {tiles.map((item) => (
-                <div key={item.label} className="flex items-center gap-4 bg-night-950/60 p-3 shadow-[inset_3px_3px_0_0_rgb(0_0_0/0.5),inset_-3px_-3px_0_0_rgb(165_222_254/0.08)]">
+                <div key={item.label} className="fact">
                   <Sprite name={item.sprite} size={32} />
                   <div>
                     <dt className="font-pixel text-[0.5625rem] uppercase tracking-widest text-snow-400">{item.label}</dt>

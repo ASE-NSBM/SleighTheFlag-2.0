@@ -10,8 +10,8 @@ export function Guild() {
     <section id="guild" data-section className="section" aria-labelledby="guild-title">
       <div className="section-inner">
         <Reveal>
-          <div className="px-box px-frost snowcap p-6 sm:p-9">
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr]">
+          <div className="px-box px-frost snowcap p-5 sm:p-9">
+            <div className="grid gap-10 max-sm:gap-8 lg:grid-cols-[1.1fr_1fr]">
               <div>
                 <SectionHeading id="guild" kicker="The guild behind the hunt" sprite="tree">
                   Organised by <em>{organizer.shortName}</em>
@@ -37,7 +37,8 @@ export function Guild() {
 
                 <p className="mt-7 text-snow-200">{organizer.about}</p>
 
-                <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {/* Vision and mission are background reading: phones keep to who ASE is and how to reach them. */}
+                <div className="mt-6 grid gap-5 max-sm:hidden sm:grid-cols-2">
                   {[
                     { title: "Vision", body: organizer.vision, sprite: "eye" as const },
                     { title: "Mission", body: organizer.mission, sprite: "star" as const },
@@ -112,7 +113,7 @@ export function Guild() {
                   <Sprite name="link" size={12} />
                   Follow {organizer.shortName}
                 </h3>
-                <ul className="mt-5 flex list-none flex-wrap gap-5 p-0">
+                <ul className="mt-5 flex list-none flex-wrap gap-5 p-0 max-sm:gap-4">
                   {organizer.socials.map((social) => (
                     <li key={social.label}>
                       <a className="px-btn px-btn-sm" href={social.url} target="_blank" rel="noopener noreferrer">
@@ -144,7 +145,8 @@ export function SiteFooter() {
                 {event.name} <span className="text-gold-400">{event.edition}</span>
               </span>
             </a>
-            <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-3">
+            {/* Phones already have every section one tap away in the menu. */}
+            <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-3 max-sm:hidden">
               {nav.slice(1).map((item) => (
                 <a key={item.id} href={`#${item.id}`} className="py-1 text-snow-300 underline-offset-4 hover:text-white hover:underline">
                   {item.label}

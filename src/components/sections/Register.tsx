@@ -29,7 +29,7 @@ export function Register() {
           </SectionHeading>
         </Reveal>
 
-        <Reveal className="mt-12">
+        <Reveal className="mt-12 max-sm:mt-8">
           <RegisterWizard />
         </Reveal>
       </div>

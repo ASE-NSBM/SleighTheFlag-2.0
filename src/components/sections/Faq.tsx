@@ -16,7 +16,7 @@ export function Faq() {
             </SectionHeading>
           </Reveal>
 
-          <div className="mt-8 space-y-6">
+          <div className="mt-8 space-y-6 max-sm:space-y-4">
             {allFaqs.map((item, index) => (
               <Reveal key={item.q} index={Math.min(index, 4)}>
                 <details className="px-box plank" name="faq">
