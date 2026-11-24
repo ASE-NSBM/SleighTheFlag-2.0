@@ -44,11 +44,11 @@ export function Hero() {
           <p className="lead mt-3 max-w-[56ch] [text-shadow:0_2px_0_rgb(4_6_15/0.7)]">{event.tagline}</p>
 
           <div className="mt-7 flex flex-wrap items-center gap-6">
-            <a href="#register" className="px-btn px-btn-berry px-btn-lg">
+            <a href="#register" className="px-btn px-btn-berry px-btn-lg w-full sm:w-auto">
               <Sprite name="flag" size={24} />
               Register your team
             </a>
-            <a href="#about" className="px-btn px-btn-ghost px-btn-lg">
+            <a href="#about" className="px-btn px-btn-ghost px-btn-lg hidden sm:inline-flex">
               Explore the island
               <Sprite name="chevron-down" size={12} />
             </a>

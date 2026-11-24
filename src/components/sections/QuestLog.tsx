@@ -49,7 +49,7 @@ export function QuestLog({ quests }: { quests: Quest[] }) {
                   {quest.day} · {quest.time}
                 </time>
               </p>
-              <p className="mt-1 text-[1.0625rem] leading-normal text-snow-300">{quest.note}</p>
+              <p className="mt-1 hidden text-[1.0625rem] leading-normal text-snow-300 sm:block">{quest.note}</p>
             </div>
           </li>
         );

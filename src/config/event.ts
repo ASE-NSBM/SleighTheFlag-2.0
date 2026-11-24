@@ -101,8 +101,8 @@ export const organizer = {
     "To create an inclusive community that bridges academia and industry through meaningful events, workshops and competitions.",
   logo: "/ase-logo.jpg",
   email: "ase@nsbm.ac.lk",
-  phone: "+94 71 872 9888",
-  phoneHref: "tel:+94718729888",
+  phone: "+94 70 515 3000",
+  phoneHref: "tel:+94705153000",
   address: "NSBM Green University, Mahenwatta, Pitipana, Homagama, Sri Lanka",
   mapUrl: "https://maps.google.com/?q=NSBM+Green+University",
   socials: [

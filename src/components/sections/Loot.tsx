@@ -23,20 +23,22 @@ export function Loot() {
           </SectionHeading>
         </Reveal>
 
-        <ul className="mx-auto mt-14 grid max-w-[980px] list-none grid-cols-1 gap-x-8 gap-y-9 p-0 sm:grid-cols-3">
+        <ul className="mx-auto mt-8 grid max-w-[980px] list-none grid-cols-1 gap-x-8 gap-y-5 p-0 sm:mt-14 sm:grid-cols-3 sm:gap-y-9">
           {prizes.map((prize, index) => (
             <li key={prize.place} className={ORDER[index]}>
               <Reveal index={index} className="h-full">
                 <article className="px-box px-frost loot h-full" data-tier={prize.tier}>
                   <span className="loot-place">{prize.place}</span>
-                  <Sprite name={SPRITE[prize.tier]} size={64} className="float" />
-                  <h3 className="h-card">{prize.title}</h3>
-                  <p className="loot-reward">{prize.reward}</p>
-                  <ul className="mt-1 list-none space-y-1 p-0 text-[1.0625rem] text-snow-300">
-                    {prize.perks.map((perk) => (
-                      <li key={perk}>{perk}</li>
-                    ))}
-                  </ul>
+                  <Sprite name={SPRITE[prize.tier]} size={64} className="loot-icon float" />
+                  <div className="loot-text">
+                    <h3 className="h-card">{prize.title}</h3>
+                    <p className="loot-reward">{prize.reward}</p>
+                    <ul className="mt-1 hidden list-none space-y-1 p-0 text-[1.0625rem] text-snow-300 sm:block">
+                      {prize.perks.map((perk) => (
+                        <li key={perk}>{perk}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </article>
               </Reveal>
             </li>

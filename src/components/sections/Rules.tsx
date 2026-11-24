@@ -13,7 +13,7 @@ export function Rules() {
               The <em>code</em> of the North
             </SectionHeading>
 
-            <ol className="mt-7 list-none space-y-5 p-0">
+            <ol className="mt-6 list-none space-y-4 p-0 sm:mt-7 sm:space-y-5">
               {rules.map((rule, index) => (
                 <li key={rule.title} className="grid grid-cols-[40px_1fr] gap-4">
                   <span
@@ -24,7 +24,7 @@ export function Rules() {
                   </span>
                   <div>
                     <h3 className="h-card">{rule.title}</h3>
-                    <p className="mt-1.5 text-[1.0625rem] leading-normal text-snow-300">{rule.body}</p>
+                    <p className="mt-1.5 text-[0.9375rem] leading-normal text-snow-300 sm:text-[1.0625rem]">{rule.body}</p>
                   </div>
                 </li>
               ))}

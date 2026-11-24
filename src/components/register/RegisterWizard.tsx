@@ -210,7 +210,7 @@ export function RegisterWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"code" | "whatsapp" | null>(null);
   const [universityIsOther, setUniversityIsOther] = useState(false);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -502,16 +502,16 @@ export function RegisterWizard() {
     setPhase("form");
   };
 
-  const copyCode = async () => {
-    if (!receipt) return;
+  const copyText = async (text: string, what: "code" | "whatsapp") => {
     try {
-      await navigator.clipboard.writeText(receipt.code);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2200);
+      await navigator.clipboard.writeText(text);
+      setCopied(what);
+      window.setTimeout(() => setCopied((current) => (current === what ? null : current)), 2200);
     } catch {
-      toast({ title: "Copy failed", body: "Select the code and copy it by hand.", tone: "error" });
+      toast({ title: "Copy failed", body: what === "code" ? "Select the code and copy it by hand." : "Press and hold the link to copy it.", tone: "error" });
     }
   };
+  const copyCode = () => receipt && copyText(receipt.code, "code");
 
   /* ── pieces ──────────────────────────────────────────────────────── */
 
@@ -573,7 +573,9 @@ export function RegisterWizard() {
   if (phase === "done" && receipt) {
     return (
       <div className="px-box px-solid snowcap relative mx-auto max-w-[860px] p-6 sm:p-10">
-        <div className="pointer-events-none absolute left-1/2 top-24 z-10" aria-hidden="true">
+        {/* Confetti stays inside the card, so nothing pokes past the screen edge on phones. */}
+        <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute left-1/2 top-24">
           {confetti.map((piece, index) => (
             <i
               key={index}
@@ -592,6 +594,7 @@ export function RegisterWizard() {
             />
           ))}
         </div>
+        </div>
 
         <div className="text-center">
           <Sprite name="flag" size={64} className="float mx-auto" />
@@ -608,11 +611,11 @@ export function RegisterWizard() {
               <p className="font-pixel text-[0.625rem] uppercase tracking-widest text-snow-400">Registration code</p>
               <p className="term mt-2 select-all text-[2.75rem] leading-none text-gold-300">{receipt.code}</p>
               <button type="button" className="px-btn px-btn-gold px-btn-sm mt-5" onClick={copyCode}>
-                <Sprite name={copied ? "check" : "copy"} size={12} />
-                {copied ? "Copied" : "Copy code"}
+                <Sprite name={copied === "code" ? "check" : "copy"} size={12} />
+                {copied === "code" ? "Copied" : "Copy code"}
               </button>
               <span className="sr-only" role="status">
-                {copied ? "Registration code copied to the clipboard" : ""}
+                {copied === "code" ? "Registration code copied to the clipboard" : copied === "whatsapp" ? "WhatsApp group link copied to the clipboard" : ""}
               </span>
             </div>
 
@@ -622,11 +625,25 @@ export function RegisterWizard() {
                 <p className="mt-2 text-snow-200">
                   All announcements, briefing details and event-day updates are posted there. Share this link with every member of your team.
                 </p>
-                <a href={receipt.whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-btn px-btn-pine px-btn-lg mt-5">
-                  <Sprite name="phone" size={24} />
-                  Join the WhatsApp group
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
+                <div className="mt-5 flex flex-wrap gap-4">
+                  <a href={receipt.whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-btn px-btn-pine px-btn-lg w-full sm:w-auto">
+                    <Sprite name="phone" size={24} />
+                    Join the WhatsApp group
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                  <button type="button" className="px-btn px-btn-ghost px-btn-lg w-full sm:w-auto" onClick={() => copyText(receipt.whatsappUrl!, "whatsapp")}>
+                    <Sprite name={copied === "whatsapp" ? "check" : "copy"} size={16} />
+                    {copied === "whatsapp" ? "Link copied" : "Copy link"}
+                  </button>
+                </div>
+                {/* The link itself, selectable, for sharing with teammates or copying by hand. */}
+                <input
+                  readOnly
+                  aria-label="WhatsApp group link"
+                  className="px-input data mt-4 !min-h-[44px] !text-[0.9375rem] text-snow-200"
+                  value={receipt.whatsappUrl}
+                  onFocus={(event) => event.currentTarget.select()}
+                />
               </div>
             )}
 
@@ -912,7 +929,7 @@ export function RegisterWizard() {
         </div>
       </form>
 
-      <aside className="lg:sticky lg:top-[calc(var(--top-h)+24px)]" aria-label="Team preview">
+      <aside className="hidden lg:sticky lg:top-[calc(var(--top-h)+24px)] lg:block" aria-label="Team preview">
         <PartyPreview teamName={draft.teamName} university={draft.university} members={draft.members} maxSize={limits.maxSize} />
         <p className="mt-5 hidden text-center text-[0.9375rem] text-snow-400 lg:block">Your team card builds itself as you type.</p>
       </aside>

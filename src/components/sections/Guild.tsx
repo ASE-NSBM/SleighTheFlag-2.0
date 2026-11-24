@@ -37,7 +37,7 @@ export function Guild() {
 
                 <p className="mt-7 text-snow-200">{organizer.about}</p>
 
-                <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                <div className="mt-6 hidden gap-5 sm:grid sm:grid-cols-2">
                   {[
                     { title: "Vision", body: organizer.vision, sprite: "eye" as const },
                     { title: "Mission", body: organizer.mission, sprite: "star" as const },
