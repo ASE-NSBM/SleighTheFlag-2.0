@@ -1204,6 +1204,196 @@ textarea.px-input {
   line-height: 1.6;
 }
 
+/* Fact tiles (About): label + value next to a sprite. */
+.facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.fact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: rgb(4 6 15 / 0.6);
+  box-shadow:
+    inset 3px 3px 0 0 rgb(0 0 0 / 0.5),
+    inset -3px -3px 0 0 rgb(165 222 254 / 0.08);
+}
+@media (min-width: 640px) {
+  .facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ───────────────────────────── phones ───────────────────────────────── */
+/*
+   Below 640px the page is one narrow column, so tall "poster" cards turn a
+   short list into screens of scrolling. Here they become compact rows: the
+   same content, far less chrome. Nothing in this block touches wider screens.
+*/
+@media (max-width: 639px) {
+  body {
+    font-size: 1.0625rem;
+  }
+
+  .section {
+    padding: 56px 16px;
+  }
+  /* Same 16px gutter as the sections, so the logo lines up with the content below it. */
+  .topbar {
+    padding: 0 16px;
+  }
+
+  /* Hero: pinned to the top under the bar (not centred), so it starts at the same
+     place on every phone; the shade runs further down to keep the clock readable. */
+  .hero {
+    align-items: flex-start;
+    padding-top: calc(var(--top-h) + 24px);
+    padding-bottom: 40px;
+  }
+  .hero::before {
+    background: linear-gradient(180deg, rgb(4 6 15 / 0.66) 0%, rgb(4 6 15 / 0.52) 60%, rgb(4 6 15 / 0.3) 82%, transparent 100%);
+  }
+  /* Keeps "Register your team" on one line even on a 360px phone. */
+  .hero .px-btn-lg {
+    padding-inline: 16px;
+    font-size: 0.8125rem;
+  }
+
+  .lead {
+    font-size: 1.0625rem;
+  }
+
+  /* About: one quiet box of divided rows instead of six separate tiles. */
+  .facts {
+    gap: 0;
+    background: rgb(4 6 15 / 0.6);
+    box-shadow:
+      inset 3px 3px 0 0 rgb(0 0 0 / 0.5),
+      inset -3px -3px 0 0 rgb(165 222 254 / 0.08);
+  }
+  .fact {
+    gap: 12px;
+    padding: 10px 14px;
+    background: none;
+    box-shadow: none;
+  }
+  .fact + .fact {
+    border-top: 2px solid rgb(165 222 254 / 0.09);
+  }
+  .fact > svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Realms: icon on the left, words on the right, difficulty as pips only. */
+  .realm {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    column-gap: 14px;
+    row-gap: 6px;
+    align-items: start;
+    padding: 14px 14px 16px;
+  }
+  .realm:hover {
+    transform: none;
+  }
+  .realm-icon {
+    grid-row: 1 / span 2;
+    width: 48px;
+    height: 48px;
+  }
+  .realm-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+  .realm-diff {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .realm-diff p {
+    display: none;
+  }
+  .realm-name {
+    grid-column: 2;
+    padding-right: 44px; /* room for the pips */
+  }
+  .realm-blurb {
+    grid-column: 2;
+  }
+
+  /* Timeline: smaller nodes; only the next milestone keeps its note. */
+  .quest {
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+    padding-bottom: 18px;
+  }
+  .quest::before {
+    left: 18px;
+    top: 40px;
+  }
+  .quest-node {
+    width: 40px;
+    height: 40px;
+  }
+  .quest-node svg {
+    width: 24px;
+    height: 24px;
+  }
+  .quest:not([data-state="next"]) .quest-note {
+    display: none;
+  }
+
+  /* Prizes: a podium row each, instead of three full-height posters. */
+  .loot {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    column-gap: 16px;
+    row-gap: 4px;
+    align-items: center;
+    padding: 16px;
+    text-align: left;
+  }
+  .loot:hover,
+  .loot:focus-within {
+    transform: none;
+  }
+  .loot-place {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+  .loot > svg {
+    grid-column: 1;
+    grid-row: 2 / span 2;
+    justify-self: center;
+    width: 40px;
+    height: 40px;
+    animation: none; /* a floating chest would drift into the place number */
+  }
+  .loot > h3,
+  .loot-reward,
+  .loot > ul {
+    grid-column: 2;
+  }
+  .loot-reward {
+    font-size: 0.6875rem;
+  }
+
+  /* FAQ signs: a little shorter, so more questions fit on a screen. */
+  .plank summary {
+    min-height: 52px;
+    padding: 12px 14px;
+    font-size: 0.6875rem;
+  }
+  .plank-body {
+    padding: 0 14px 14px;
+  }
+}
+
 /* ───────────────────────────── toasts ───────────────────────────────── */
 
 .toasts {

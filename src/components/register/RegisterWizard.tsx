@@ -912,7 +912,8 @@ export function RegisterWizard() {
         </div>
       </form>
 
-      <aside className="lg:sticky lg:top-[calc(var(--top-h)+24px)]" aria-label="Team preview">
+      {/* The live team card is a desktop nicety; on a phone it would only add scrolling under the form. */}
+      <aside className="max-sm:hidden lg:sticky lg:top-[calc(var(--top-h)+24px)]" aria-label="Team preview">
         <PartyPreview teamName={draft.teamName} university={draft.university} members={draft.members} maxSize={limits.maxSize} />
         <p className="mt-5 hidden text-center text-[0.9375rem] text-snow-400 lg:block">Your team card builds itself as you type.</p>
       </aside>

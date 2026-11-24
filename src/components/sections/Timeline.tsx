@@ -20,7 +20,7 @@ export function Timeline() {
     <section id="quests" data-section className="section" aria-labelledby="quests-title">
       <div className="section-inner">
         <Reveal className="panel-narrow side-left">
-          <div className="px-box px-frost snowcap p-6 sm:p-8">
+          <div className="px-box px-frost snowcap p-5 sm:p-8">
             <SectionHeading id="quests" kicker="Quest log" sprite="clock">
               Mark your <em>calendar</em>
             </SectionHeading>

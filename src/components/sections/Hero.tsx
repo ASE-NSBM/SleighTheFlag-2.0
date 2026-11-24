@@ -11,10 +11,11 @@ export function Hero() {
     <section id="spawn" data-section className="section hero" aria-labelledby="spawn-title">
       <div className="section-inner">
         <div className="max-w-[760px]">
-          <a href="#guild" className="px-chip px-chip-gold pop-in max-w-full whitespace-normal no-underline" style={{ padding: "8px 12px 8px 8px" }}>
+          <a href="#guild" className="px-chip px-chip-gold pop-in max-w-full whitespace-normal no-underline max-sm:text-[0.5625rem]" style={{ padding: "8px 12px 8px 8px" }}>
             <Image src={organizer.logo} alt="" width={24} height={24} className="h-6 w-6 shrink-0" style={{ imageRendering: "auto" }} />
             <span>
-              {organizer.shortName} · {organizer.university} presents
+              {organizer.shortName} · {organizer.university}
+              <span className="max-sm:hidden"> presents</span>
             </span>
           </a>
 
@@ -37,24 +38,30 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="kicker mt-7 text-ice-300">
-            <Sprite name="snowflake" size={16} />
-            {event.kicker} · {formatDay(event.dates.eventStart)}
+          {/* On phones: no icon, so the line starts flush with the title, and the date gets its own line. */}
+          <p className="kicker mt-7 text-ice-300 max-sm:mt-6">
+            <Sprite name="snowflake" size={16} className="max-sm:hidden" />
+            <span className="max-sm:[text-wrap:balance]">
+              {event.kicker}
+              <span className="max-sm:hidden"> · </span>
+              <span className="max-sm:mt-1 max-sm:block max-sm:text-gold-300">{formatDay(event.dates.eventStart)}</span>
+            </span>
           </p>
           <p className="lead mt-3 max-w-[56ch] [text-shadow:0_2px_0_rgb(4_6_15/0.7)]">{event.tagline}</p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-6">
-            <a href="#register" className="px-btn px-btn-berry px-btn-lg">
+          <div className="mt-7 flex flex-wrap items-center gap-6 max-sm:mt-6">
+            <a href="#register" className="px-btn px-btn-berry px-btn-lg max-sm:w-full">
               <Sprite name="flag" size={24} />
               Register your team
             </a>
-            <a href="#about" className="px-btn px-btn-ghost px-btn-lg">
+            {/* One action is enough on a phone: scrolling already explores the island. */}
+            <a href="#about" className="px-btn px-btn-ghost px-btn-lg max-sm:hidden">
               Explore the island
               <Sprite name="chevron-down" size={12} />
             </a>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 max-sm:mt-7">
             <Countdown />
           </div>
 
