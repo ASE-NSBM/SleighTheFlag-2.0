@@ -8,7 +8,8 @@
 
 @theme inline {
   --font-pixel: var(--font-press-start), "Courier New", ui-monospace, monospace;
-  --font-body: var(--font-pixelify), ui-sans-serif, system-ui, sans-serif;
+  /* Digits first: that font contains only 0–9, so letters fall through to Pixelify. */
+  --font-body: var(--font-digits), var(--font-pixelify), ui-sans-serif, system-ui, sans-serif;
   --font-term: var(--font-vt323), ui-monospace, "Courier New", monospace;
   --font-data: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 }

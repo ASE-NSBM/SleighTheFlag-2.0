@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Pixelify_Sans, Press_Start_2P, VT323 } from "next/font/google";
+import localFont from "next/font/local";
 import { event, keywords, organizer } from "@/config/event";
 import { metaDescription, pageTitle } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
@@ -26,6 +27,24 @@ const vt323 = VT323({
   subsets: ["latin"],
   variable: "--font-vt323",
   display: "swap",
+});
+
+/*
+ * Clear numerals for body text. Pixelify Sans draws its 5 almost like an 8
+ * ("15 Dec" read as "18 Dec"), so digits come from Jersey 10 instead (SIL Open
+ * Font License). The file holds only 0–9; every other character falls through
+ * to Pixelify. No fallback font is generated on purpose — one with letters
+ * would hijack the text before Pixelify could.
+ */
+const digits = localFont({
+  src: "./fonts/jersey10-digits.woff2",
+  variable: "--font-digits",
+  display: "swap",
+  adjustFontFallback: false,
+  declarations: [
+    { prop: "unicode-range", value: "U+0030-0039" },
+    { prop: "size-adjust", value: "118%" }, // digit height matches Pixelify's capitals
+  ],
 });
 
 const organiserName = `${organizer.name} (${organizer.shortName}), ${organizer.university}`;
@@ -81,7 +100,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${pressStart.variable} ${pixelify.variable} ${vt323.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${pressStart.variable} ${pixelify.variable} ${vt323.variable} ${digits.variable}`}>
       <body>
         {children}
         {/* Without JavaScript nothing can scroll-reveal or lift the loading curtain. */}

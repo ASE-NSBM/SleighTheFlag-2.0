@@ -235,7 +235,7 @@ All artwork is generated in code; the project ships no third-party image or mode
 ## Credits
 
 Organised by the [Association of Software Engineering](https://www.linkedin.com/company/asensbm), NSBM Green University.
-Fonts: Press Start 2P, Pixelify Sans and VT323 (SIL Open Font License, served locally via `next/font`).
+Fonts: Press Start 2P, Pixelify Sans, VT323 and the digits of Jersey 10 (all SIL Open Font License, served locally via `next/font`).
 Sleigh The Flag is an independent student event; this site is not affiliated with or endorsed by
 Mojang or Microsoft.
 
