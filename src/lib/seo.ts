@@ -68,7 +68,7 @@ const generatedFaqs: { q: string; a: string }[] = [
   },
   {
     q: "How do we register a team?",
-    a: `Use the registration form on this page. Enter a team name and your university, then each member's full name, student ID, university email and contact number — the team leader goes first. Teams have ${facts.teamSize}. You receive a registration code as soon as you submit.`,
+    a: `Use the registration form on this page. Enter a team name and your university, then each member's full name, student ID, email (a university email if they have one) and contact number — the team leader goes first. Teams have ${facts.teamSize}. You receive a registration code as soon as you submit.`,
   },
   {
     q: `Who organises ${event.name}?`,

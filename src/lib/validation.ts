@@ -32,6 +32,12 @@ const cleanIfString = (value: unknown) => (typeof value === "string" ? cleanText
 const lowerIfString = (value: unknown) => (typeof value === "string" ? value.trim().toLowerCase() : value);
 const trimIfString = (value: unknown) => (typeof value === "string" ? value.trim() : value);
 
+/** True for addresses at public providers (Gmail, Outlook, Yahoo…), i.e. not a university inbox. */
+export function isPersonalEmail(email: string): boolean {
+  const domain = email.trim().toLowerCase().split("@")[1] ?? "";
+  return FREE_MAIL_DOMAINS.has(domain);
+}
+
 export function isUniversityEmail(email: string): boolean {
   const domain = email.split("@")[1] ?? "";
   return domain.length > 0 && !FREE_MAIL_DOMAINS.has(domain);
@@ -88,8 +94,8 @@ function personSchema(strict: boolean) {
     email: z.preprocess(
       lowerIfString,
       z
-        .string({ error: "Enter the university email." })
-        .min(1, "Enter the university email.")
+        .string({ error: event.requireUniversityEmail ? "Enter the university email." : "Enter an email address." })
+        .min(1, event.requireUniversityEmail ? "Enter the university email." : "Enter an email address.")
         .max(120, "That email is too long — 120 characters max.")
         .regex(EMAIL_RE, "That doesn't look like a valid email address.")
         .refine(

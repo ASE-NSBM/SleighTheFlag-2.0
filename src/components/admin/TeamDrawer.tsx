@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/Toast";
 import { event } from "@/config/event";
 import { formatStamp, timeAgo } from "@/lib/format";
 import type { Team, TeamStatus } from "@/lib/types";
-import { formatPhone } from "@/lib/validation";
+import { formatPhone, isPersonalEmail } from "@/lib/validation";
 import { useAdminData } from "./AdminData";
 import { StatusChip, useNow } from "./bits";
 import { useDialog } from "./useDialog";
@@ -145,6 +145,11 @@ export function TeamDrawer({ team, onClose, onEdit, onDelete }: TeamDrawerProps)
                           <a className="truncate text-ice-300 underline underline-offset-4 hover:text-white" href={`mailto:${member.email}?subject=${subject}`}>
                             {member.email}
                           </a>
+                          {isPersonalEmail(member.email) && (
+                            <span className="px-chip px-chip-gold shrink-0" title="Not a university email — check the student ID">
+                              Personal
+                            </span>
+                          )}
                         </dd>
                       </div>
                       <div className="flex gap-2">

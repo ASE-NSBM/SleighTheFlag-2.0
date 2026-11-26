@@ -8,7 +8,7 @@ import { event, organizer, universities } from "@/config/event";
 import { fetchRegistrationStatus } from "@/lib/client-status";
 import { formatStamp } from "@/lib/format";
 import type { FieldErrors, PersonInput, RegistrationReason, RegistrationStatus } from "@/lib/types";
-import { formatPhone, limits, normalizePhone, validatePerson, validateTeam, validateTeamFields, validateTeamName } from "@/lib/validation";
+import { formatPhone, isPersonalEmail, limits, normalizePhone, validatePerson, validateTeam, validateTeamFields, validateTeamName } from "@/lib/validation";
 import { describedBy, Field, fieldId, UniversityPicker } from "./fields";
 import { PartyPreview } from "./PartyPreview";
 
@@ -149,10 +149,16 @@ function PersonFields({ index, member, errors, onChange, onBlur }: PersonFieldsP
       </Field>
       <Field
         id={id("email")}
-        label="University email"
+        label={event.requireUniversityEmail ? "University email" : "Email"}
         required
         error={error("email")}
-        hint={event.requireUniversityEmail ? "Your university inbox — not Gmail or Outlook." : undefined}
+        hint={
+          event.requireUniversityEmail
+            ? "Your university inbox — not Gmail or Outlook."
+            : isPersonalEmail(member.email)
+              ? "Personal email — that's fine if you don't have a university one."
+              : "Your university email if you have one — otherwise a personal email is fine."
+        }
       >
         <input
           id={id("email")}
@@ -166,7 +172,7 @@ function PersonFields({ index, member, errors, onChange, onBlur }: PersonFieldsP
           placeholder="name@students.nsbm.ac.lk"
           aria-required="true"
           aria-invalid={error("email") ? true : undefined}
-          aria-describedby={describedBy(id("email"), error("email"), event.requireUniversityEmail)}
+          aria-describedby={describedBy(id("email"), error("email"), true)}
           value={member.email}
           onChange={(e) => onChange(index, "email", e.target.value)}
           onBlur={() => onBlur(key("email"))}
@@ -650,7 +656,7 @@ export function RegisterWizard() {
             <h4 className="kicker mt-8">What happens next</h4>
             <ol className="mt-4 list-none space-y-3 p-0 text-snow-200">
               {[
-                `${organizer.shortName} reviews your team against the student IDs and university emails you entered.`,
+                `${organizer.shortName} reviews your team against the student IDs and details you entered.`,
                 receipt.whatsappUrl ? "Confirmation and briefing details are announced in the WhatsApp group." : "The team leader is contacted with the confirmation and the briefing details.",
                 `Be ready when the hunt begins on ${formatStamp(event.dates.eventStart)}.`,
               ].map((line, index) => (

@@ -1,7 +1,7 @@
 import "server-only";
 import { deflateRawSync } from "node:zlib";
 import { event, TIMEZONE } from "@/config/event";
-import { formatPhone } from "./validation";
+import { formatPhone, isPersonalEmail } from "./validation";
 import type { Team } from "./types";
 
 /**
@@ -82,6 +82,7 @@ export function participantsSheet(teams: Team[]): Sheet {
     { header: "Full name", width: 28 },
     { header: "Student ID", width: 18 },
     { header: "Email", width: 34 },
+    { header: "Email type", width: 12 },
     { header: "Contact", width: 18 },
     { header: "Registered (Sri Lanka time)", width: 24 },
   ];
@@ -97,6 +98,7 @@ export function participantsSheet(teams: Team[]): Sheet {
         member.fullName,
         member.studentId,
         member.email,
+        isPersonalEmail(member.email) ? "Personal" : "University",
         formatPhone(member.phone),
         localStamp(team.createdAt),
       ]);

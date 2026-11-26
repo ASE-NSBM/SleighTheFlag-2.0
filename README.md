@@ -41,14 +41,15 @@ Requires Node.js 20.9 or newer.
 ## What is collected
 
 Per team: **team name**, **university**. Per member (the first one is the **team leader**):
-**full name**, **student ID**, **university email**, **contact number**.
+**full name**, **student ID**, **email**, **contact number**.
 
 Rules enforced on the server (the browser only mirrors them for instant feedback):
 
 - Team size between `team.minSize` and `team.maxSize` (leader included).
 - Team names are unique; an email can belong to one team only; no duplicate email / student ID inside a team.
-- Emails must be university inboxes — public providers (Gmail, Outlook, Yahoo…) are rejected.
-  Turn this off with `requireUniversityEmail: false` in the config.
+- A university email is asked for, but a member without one can use a personal address (Gmail,
+  Outlook…). Those are marked "Personal" in the admin panel and in the participants export.
+  Set `requireUniversityEmail: true` in the config to accept university emails only.
 - Phone numbers accept the usual Sri Lankan spellings (`077 123 4567`, `+94 77 123 4567`…) or any
   international `+` number, and are stored in one normalised format.
 - Registration only works while it is open: inside the configured dates, not paused by an organiser,

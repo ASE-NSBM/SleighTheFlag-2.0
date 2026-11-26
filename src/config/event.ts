@@ -61,8 +61,13 @@ export const event = {
     maxSize: 4,
   },
 
-  /** Reject Gmail / Yahoo / Outlook… and insist on a university inbox. */
-  requireUniversityEmail: true,
+  /**
+   * false → a university email is asked for but not required: a member without
+   * one can register with a personal address (Gmail, Outlook…). Organisers see
+   * those marked "Personal" in the admin panel and the export.
+   * true  → only university emails are accepted.
+   */
+  requireUniversityEmail: false,
 
   /** Shown on the confirmation ticket and in exports. */
   codePrefix: "STF",
@@ -224,7 +229,7 @@ export const timeline: { title: string; at: string; note: string; sprite: Sprite
   {
     title: "Registration closes",
     at: event.dates.registrationCloses,
-    note: "Last call. Teams are verified against university email and student ID.",
+    note: "Last call. Teams are verified against the student IDs and details provided.",
     sprite: "lock",
   },
   {
@@ -290,7 +295,7 @@ export const rules: { title: string; body: string }[] = [
   },
   {
     title: "Real identities",
-    body: "Every member registers with their own university email and student ID. Organisers may ask for verification before or during the event.",
+    body: "Every member registers with their own student ID and their own email — a university email if they have one. Organisers may ask for verification before or during the event.",
   },
   {
     title: "Play fair",
@@ -314,7 +319,7 @@ export const faqs: { q: string; a: string }[] = [
   },
   {
     q: "Who can take part?",
-    a: "Undergraduates currently enrolled at a university or higher-education institute. Every member needs a valid student ID and a university email address.",
+    a: "Undergraduates currently enrolled at a university or higher-education institute. Every member needs a valid student ID and an email address — use your university email if you have one; otherwise a personal email is fine.",
   },
   {
     q: "How many members can a team have?",
